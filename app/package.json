@@ -1,0 +1,16 @@
+{
+  "name": "app-exercise",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "npm i && node src/index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.13",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "mongo-seeding": "^3.0.0"
+  }
+}
