@@ -16,19 +16,22 @@ We want to get a simple shopping cart. For this, we need to build a NodeJs appli
 ## Skills we are going to assert:
 
 **General coding skills:**
+
 * How readable your code is
 * How you structure your code
 
 **Modeling skills:**
+
 * Which model you create to solve the problem
 
 **Problem solving skills:**
+
 * How you solve logical problems
 * How you use the tools the language provides
 * How well you know the best practices of the language
 * Which patterns you put in practice
 * Which best practices you use
- * Basic git skills, how you organize the changes.
+* Basic git skills, how you organize the changes.
 
 
 **Skills we are NOT going to assert:**
@@ -36,7 +39,7 @@ We want to get a simple shopping cart. For this, we need to build a NodeJs appli
 * Page load performance optimization
 * Extra features we did not ask for our application
 
-**How to start with this**
+## How to start with the exercise
 
 For start with the exercise you need to run this command to build the Docker containers
 
