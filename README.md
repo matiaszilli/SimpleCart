@@ -41,7 +41,7 @@ We want to get a simple shopping cart. For this, we need to build a NodeJs appli
 
 ## How to start with the exercise
 
-For start with the exercise you need to run this command to build the Docker containers
+To start with the exercise you need to run this command to build the Docker containers
 
     ./up.sh
 If you want to load some example products you can use our seeders:
