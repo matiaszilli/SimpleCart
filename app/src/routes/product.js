@@ -42,6 +42,13 @@ app.get('/:id', (req, res) => {
                 errors: err
             });
 
+        // if id does not exists
+        if (!product)
+            return res.status(500).json({
+                ok: false,
+                msj: 'Error, wrong id',
+            });
+
         // return a given product
         return res.json({
             ok: true,
