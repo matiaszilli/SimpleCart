@@ -47,3 +47,43 @@ To start with the exercise you need to run this command to build the Docker cont
 If you want to load some example products you can use our seeders:
 
     ./seeders.sh
+
+---------------------------------------------------------------------------------------
+
+# Solution:
+
+## Proposal
+
+To solve the described challenge, I am going to use a MongoDb database with two collections and a set of API endpoints built in Node.js.
+The main idea is to have a CRUD of Products, and the ability of add and delete those to Orders. In addition the API have to be able to obtain the "best sold" products.
+The collections and API endpoints are described in the following sections. 
+
+## Collection description
+
+### Products:
+
+This collections stores product information, below collection attributes are described.
+* Title
+* Description
+* Price
+* Stock
+
+## API endpoint description
+
+What follows are a list of the API endpoints developed for this project.
+
+### Products
+
+* GET  /products
+
+* GET  /products/:id
+
+* POST  /products : Post here with `title`, `description`, `price`, `stock`. 
+
+* DELETE  /products/:id
+
+* GET  /products/bestSeller
+
+
+
+
