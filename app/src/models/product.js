@@ -10,7 +10,7 @@ var productSchema = new Schema({
     title: {type: String, required: true},
     description: {type: String, required: false},
     price: {type: String, required: false},
-    stock: {type: String, required: true},
+    stock: {type: Number, required: true},
 }, {collection: 'products'});
 
 module.exports = mongoose.model('Product', productSchema);
