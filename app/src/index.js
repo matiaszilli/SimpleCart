@@ -15,10 +15,12 @@ app.use(bodyParser.json());
 
 // Requiring Routes
 var productRoutes = require('./routes/product');
+var orderRoutes = require('./routes/order');
 
 
 // Routes
 app.use('/products', productRoutes);
+app.use('/orders', orderRoutes);
 
 
 // Setting database connection

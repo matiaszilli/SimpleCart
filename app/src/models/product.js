@@ -1,7 +1,7 @@
 
 // Schema defined for Products collection
 
-// The only one required parameter is title.
+// Required parameters are title and stock.
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
