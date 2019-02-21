@@ -1,22 +1,31 @@
 
 // Requires
 const express = require('express');
-const app = express();
-
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+
+const app = express();
 
 // Setting body-parser
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
- // parse application/json
+// parse application/json
 app.use(bodyParser.json());
+
+
+// Requiring Routes
+var productRoutes = require('./routes/product');
+
+
+// Routes
+app.use('/products', productRoutes);
+
 
 // Setting database connection
 // building mongodb uri
 const connString = 'mongodb+srv://matias:contra10@cluster0-jssy7.mongodb.net/cartEndeev?retryWrites=true';
 // connecting to mongo
-mongoose.connect(connString, (err) => {
+mongoose.connect(connString, { useNewUrlParser: true }, (err) => {
     if (err) throw err;
 });
 var db = mongoose.connection;
@@ -27,10 +36,6 @@ db.once('open', function() {
 
 
 // Server
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
 app.listen(3000, () => {
     console.log(`🚀 Server ready on port 3000`);
 });
