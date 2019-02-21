@@ -195,7 +195,7 @@ app.put('/:id/products', (req, res) => {
 
 
         // if the Product exists in the Order
-        if(order.items.id(deleteProduct)){
+        if (order.items.id(deleteProduct)) {
             var oldQuantity = order.items.id(deleteProduct).quantity;
             order.items.id(deleteProduct).remove();
         } else { // if not, add it to items
@@ -207,15 +207,15 @@ app.put('/:id/products', (req, res) => {
 
         // increment Product stock
         Product
-        .findOneAndUpdate({ _id: deleteProduct }, { $inc: { stock: oldQuantity } }, {new: true }, (err) => {
-        // if there was a error getting the Order
-        if (err)
-            return res.status(400).json({
-                ok: false,
-                msj: 'Error updating Product stock',
-                errors: err
+            .findOneAndUpdate({ _id: deleteProduct }, { $inc: { stock: oldQuantity } }, {new: true }, (err) => {
+            // if there was a error getting the Order
+            if (err)
+                return res.status(400).json({
+                    ok: false,
+                    msj: 'Error updating Product stock',
+                    errors: err
+                });
             });
-        });
 
         // save order
         order.save(
@@ -278,7 +278,7 @@ app.get('/:id/checkout', async (req, res) => {
             data: orderDB
         });
 
-    } catch (err){
+    } catch (err) {
         return res.status(500).json({
             ok: false,
             msj: 'Error checking out',

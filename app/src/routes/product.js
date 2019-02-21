@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 
 var Product = require('../models/product'); // requires Product model
+var Order = require('../models/order'); // requires Order model
 
 // Get all Products
 app.get('/', (req, res) => {
@@ -28,7 +29,7 @@ app.get('/', (req, res) => {
 });
 
 // Get a Product by id
-app.get('/:id', (req, res) => {
+app.get('/:id', (req, res, next) => {
     var id = req.params.id;
     Product
         .findById(id)
@@ -116,6 +117,47 @@ app.delete('/:id', (req, res) => {
         });
     });
 });
+
+// Get Best Sellers
+app.patch('/bestSeller', async (req, res) => {
+    let bests = [];
+    try {
+        // get all orders
+        orders = await Order.find({});
+        
+        // iterate over each Order
+        for (const order of orders) {
+            let orderItems = order.items;
+            // iterate over each item in the Order
+            for (const orderItem of orderItems) {
+                // if the product exist in the Best table then increment quantity
+                let itemBestFound = bests.find( (itemBest) => itemBest._id.toString() === orderItem._id.toString());
+                if (itemBestFound) {
+                    itemBestFound.quantity += orderItem.quantity;
+                } else { // if not, add it to bests
+                    bests.push(orderItem);
+                }
+            }
+        }
+
+        // sort best array by quantity
+        bests.sort((b,a) => (a.quantity > b.quantity) ? 1 : ((b.quantity > a.quantity) ? -1 : 0)); 
+
+        // return best seller products
+        return res.json({
+            ok: true,
+            data: bests
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            ok: false,
+            msj: 'Error getting best sellers',
+            errors: err
+        });
+    }
+});
+
 
 
 module.exports = app;
