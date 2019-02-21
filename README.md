@@ -100,11 +100,13 @@ What follows are a list of the API endpoints developed for this project.
 
 * POST  /orders/:id
 
+* DELETE  /orders/:id
+
 * POST  /orders/:id/products : Post here with `productId` and `quantity`. 
 
 * DELETE  /orders/:id/products/:idProduct
 
-* PUT  /orders/:id/checkout
+* GET  /orders/:id/checkout
 
 
 
