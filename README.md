@@ -63,10 +63,18 @@ The collections and API endpoints are described in the following sections.
 ### Products:
 
 This collections stores product information, below collection attributes are described.
-* Title
-* Description
-* Price
-* Stock
+* title: Product title.
+* description: Product description.
+* price: Product price.
+* stock: Available quantity of a product.
+
+### Orders:
+
+This collections stores order information, below collection attributes are described.
+* creationDate: Order creation date.
+* status: Represents the actual status of a order, it can be 'open' or 'closed'.
+* total: Total order amount.
+* items [ {product, quantity} ]: Array of products in a order and the corresponding quantity of each one.
 
 ## API endpoint description
 
@@ -83,6 +91,20 @@ What follows are a list of the API endpoints developed for this project.
 * DELETE  /products/:id
 
 * GET  /products/bestSeller
+
+### Orders
+
+* GET  /orders
+
+* GET  /orders/:id
+
+* POST  /orders/:id
+
+* POST  /orders/:id/products : Post here with `productId` and `quantity`. 
+
+* DELETE  /orders/:id/products/:idProduct
+
+* PUT  /orders/:id/checkout
 
 
 
