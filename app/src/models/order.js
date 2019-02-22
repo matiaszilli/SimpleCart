@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 
 var orderSchema = new Schema({
     creationDate: {type: Date, default: Date.now},
+    closedDate: {type: Date},
     status: {type: String, default: 'Open'},
     items : [
         {

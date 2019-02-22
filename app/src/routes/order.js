@@ -128,6 +128,11 @@ app.post('/:id/products', async (req, res) => {
         // get order
         let order = await Order.findById(orderId);
 
+        // if order is 'Closed', do not allow add product
+        if (order.status === 'Closed') {
+            throw new Error('Order is already Closed');
+        }
+
         // get product
         let product = await Product.findById(newProduct._id);
 
@@ -180,6 +185,11 @@ app.put('/:id/products', async (req, res) => {
         // get order
         let order = await Order.findById(orderId);
 
+        // if order is 'Closed', do not allow delete product
+        if (order.status === 'Closed') {
+            throw new Error('Order is already Closed');
+        }
+
         let oldProductQuantity;
 
         // check if the Product exists in the Order
@@ -225,6 +235,12 @@ app.get('/:id/checkout', async (req, res) => {
     try {
         // get order
         order = await Order.findById(orderId);
+
+        // if order is 'Closed' do not checkout again
+        if (order.status === 'Closed') {
+            throw new Error('Order is already Closed');
+        }
+
         // items in the order
         let orderItems = order.items;
             
@@ -247,9 +263,9 @@ app.get('/:id/checkout', async (req, res) => {
             order.total += itemPrice * itemQuantity;
         };
         
-        // update order status and total
-        console.log('total ',order.total);
+        // update order status and order close date
         order.status = 'Closed';
+        order.closedDate = Date.now();
 
         // save order
         let orderDB = await order.save();
