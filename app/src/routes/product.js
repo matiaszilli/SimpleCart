@@ -158,6 +158,4 @@ app.patch('/bestSeller', async (req, res) => {
     }
 });
 
-
-
 module.exports = app;
