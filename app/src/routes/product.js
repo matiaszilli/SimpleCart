@@ -6,7 +6,9 @@ var app = express();
 var Product = require('../models/product'); // requires Product model
 var Order = require('../models/order'); // requires Order model
 
-// Get all Products
+// ===========================
+//  Get all Products
+// ===========================
 app.get('/', (req, res) => {
     Product
         .find({})
@@ -28,7 +30,9 @@ app.get('/', (req, res) => {
     });
 });
 
-// Get a Product by id
+// ===========================
+//  Get a Product by id
+// ===========================
 app.get('/:id', (req, res, next) => {
     var id = req.params.id;
     Product
@@ -58,7 +62,9 @@ app.get('/:id', (req, res, next) => {
     });
 });
 
-// Create a Product
+// ===========================
+//  Create a Product
+// ===========================
 app.post('/', (req, res) => {
     // parse body request
     var body = req.body;
@@ -89,7 +95,9 @@ app.post('/', (req, res) => {
     });
 });
 
-// Delete a Product
+// ===========================
+//  Delete a Product
+// ===========================
 app.delete('/:id', (req, res) => {
     var id = req.params.id;
     Product
@@ -118,7 +126,9 @@ app.delete('/:id', (req, res) => {
     });
 });
 
-// Get Best Sellers
+// ===========================
+//  Get Best Sellers
+// ===========================
 app.patch('/bestSeller', async (req, res) => {
     let bests = [];
     try {
@@ -162,7 +172,7 @@ app.patch('/bestSeller', async (req, res) => {
         return res.status(500).json({
             ok: false,
             msj: 'Error getting best sellers',
-            errors: err
+            errors: err.message
         });
     }
 });

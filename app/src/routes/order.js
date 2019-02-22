@@ -6,7 +6,9 @@ var app = express();
 var Order = require('../models/order'); // requires Order model
 var Product = require('../models/product'); // requires Product model
 
-// Get all Orders
+// ===========================
+//  Get all Orders
+// ===========================
 app.get('/', (req, res) => {
     Order
         .find({})
@@ -28,7 +30,9 @@ app.get('/', (req, res) => {
     });
 });
 
-// Create a Order
+// ===========================
+//  Create a Order
+// ===========================
 app.post('/', (req, res) => {
     // parse body request
     var body = req.body;
@@ -55,7 +59,9 @@ app.post('/', (req, res) => {
     });
 });
 
-// Get a Order by id
+// ===========================
+//  Get a Order by id
+// ===========================
 app.get('/:id', (req, res) => {
     var id = req.params.id;
     Order
@@ -85,7 +91,9 @@ app.get('/:id', (req, res) => {
     });
 });
 
-// Delete a Order
+// ===========================
+//  Delete a Order
+// ===========================
 app.delete('/:id', (req, res) => {
     var id = req.params.id;
     Order
@@ -114,7 +122,9 @@ app.delete('/:id', (req, res) => {
     });
 });
 
-// Add Product to given Order
+// ===========================
+//  Add Product to given Order
+// ===========================
 app.post('/:id/products', async (req, res) => {
     var orderId = req.params.id;
     // parse body request
@@ -168,13 +178,15 @@ app.post('/:id/products', async (req, res) => {
         return res.status(500).json({
             ok: false,
             msj: 'Error adding product to order',
-            errors: err
+            errors: err.message
         });
     }
 
 });
 
-// Delete product to given Order
+// ===========================
+//  Delete product to given Order
+// ===========================
 app.put('/:id/products', async (req, res) => {
     var orderId = req.params.id;
     // parse body request
@@ -222,13 +234,15 @@ app.put('/:id/products', async (req, res) => {
         return res.status(500).json({
             ok: false,
             msj: 'Error updating Product stock',
-            errors: err
+            errors: err.message
         });
     }
 
 });
 
-// Checkout a Order
+// ===========================
+//  Checkout a Order
+// ===========================
 app.get('/:id/checkout', async (req, res) => {
     var orderId = req.params.id;
     
@@ -280,7 +294,7 @@ app.get('/:id/checkout', async (req, res) => {
         return res.status(500).json({
             ok: false,
             msj: 'Error checking out',
-            errors: err
+            errors: err.message
         });
     }
 
