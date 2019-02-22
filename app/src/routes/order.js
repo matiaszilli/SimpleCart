@@ -115,7 +115,7 @@ app.delete('/:id', (req, res) => {
 });
 
 // Add Product to given Order
-app.post('/:id/products', (req, res) => {
+app.post('/:id/products', async (req, res) => {
     var orderId = req.params.id;
     // parse body request
     var body = req.body;
@@ -123,30 +123,31 @@ app.post('/:id/products', (req, res) => {
         _id: body.id,
         quantity: parseInt(body.quantity, 10)
     };
-    Order
-        .findById(orderId)
-        .exec( (err, order) => {
-            
-        // if there was a error getting the Order
-        if (err)
-            return res.status(500).json({
-                ok: false,
-                msj: 'Error getting the order',
-                errors: err
-            });
 
-        // decrement Product stock
-        Product
-            .findOneAndUpdate({ _id: newProduct._id }, { $inc: { stock: -newProduct.quantity } }, {new: true }, (err) => {
-            // if there was a error getting the Order
-            if (err)
-                return res.status(400).json({
-                    ok: false,
-                    msj: 'Error updating Product stock',
-                    errors: err
-                });
-        });
+    try {
+        // get order
+        let order = await Order.findById(orderId);
 
+        // if order is 'Closed', do not allow add product
+        if (order.status === 'Closed') {
+            throw new Error('Order is already Closed');
+        }
+
+        // get product
+        let product = await Product.findById(newProduct._id);
+
+        // check product stock, if not sufficient send error
+        if ((product.stock - newProduct.quantity) < 0) {
+            throw new Error('There is insufficient stock of Product');
+        }
+
+        // decrement product stock
+        product.stock -= newProduct.quantity;
+
+        // save product
+        let productDB = await product.save();
+
+        // add product to order
         // if the Order already has that product increment the quantity
         if(order.items.id(newProduct._id)){
             order.items.id(newProduct._id).quantity += newProduct.quantity
@@ -155,87 +156,76 @@ app.post('/:id/products', (req, res) => {
         }
 
         // save order
-        order.save(
-            (err, orderDB) => {
-    
-            // if there was a error
-            if (err)
-                return res.status(400).json({
-                    ok: false,
-                    msj: 'Error saving Order',
-                    errors: err
-                });
-            
-            // return updated order
-            return res.json({
-                ok: true,
-                data: orderDB
-            });
+        let orderDB = await order.save();
+
+        // return updated order
+        return res.json({
+            ok: true,
+            data: orderDB
         });
-    });
+    
+    } catch (err) {
+        return res.status(500).json({
+            ok: false,
+            msj: 'Error adding product to order',
+            errors: err
+        });
+    }
+
 });
 
 // Delete product to given Order
-app.put('/:id/products', (req, res) => {
+app.put('/:id/products', async (req, res) => {
     var orderId = req.params.id;
     // parse body request
     var body = req.body;
     var deleteProduct = body.id;
-    Order
-        .findById(orderId)
-        .exec( (err, order) => {
-            
-        // if there was a error getting the Order
-        if (err)
-            return res.status(500).json({
-                ok: false,
-                msj: 'Error getting the order',
-                errors: err
-            });
 
+    try {
+        // get order
+        let order = await Order.findById(orderId);
 
-        // if the Product exists in the Order
-        if (order.items.id(deleteProduct)) {
-            var oldQuantity = order.items.id(deleteProduct).quantity;
-            order.items.id(deleteProduct).remove();
-        } else { // if not, add it to items
-            return res.status(500).json({
-                ok: false,
-                msj: 'Product does not exist in the order',
-            });
+        // if order is 'Closed', do not allow delete product
+        if (order.status === 'Closed') {
+            throw new Error('Order is already Closed');
         }
 
-        // increment Product stock
-        Product
-            .findOneAndUpdate({ _id: deleteProduct }, { $inc: { stock: oldQuantity } }, {new: true }, (err) => {
-            // if there was a error getting the Order
-            if (err)
-                return res.status(400).json({
-                    ok: false,
-                    msj: 'Error updating Product stock',
-                    errors: err
-                });
-            });
+        let oldProductQuantity;
+
+        // check if the Product exists in the Order
+        if (order.items.id(deleteProduct)) {
+            oldProductQuantity = order.items.id(deleteProduct).quantity;
+            order.items.id(deleteProduct).remove();
+        } else { // if not, send error
+            throw new Error('Product does not exist in the order');
+        }
+
+        // get product
+        let product = await Product.findById(deleteProduct);
+
+        // increment product stock
+        product.stock += oldProductQuantity;
+
+        // save product
+        let productDB = await product.save();
 
         // save order
-        order.save(
-            (err, orderDB) => {
-    
-            // if there was a error
-            if (err)
-                return res.status(400).json({
-                    ok: false,
-                    msj: 'Error saving Order',
-                    errors: err
-                });
-            
-            // return updated order
-            return res.json({
-                ok: true,
-                data: orderDB
-            });
+        let orderDB = await order.save();
+
+        // return updated order
+        return res.json({
+            ok: true,
+            data: orderDB
         });
-    });
+
+    } catch (err) {
+        return res.status(500).json({
+            ok: false,
+            msj: 'Error updating Product stock',
+            errors: err
+        });
+    }
+
 });
 
 // Checkout a Order
@@ -243,7 +233,14 @@ app.get('/:id/checkout', async (req, res) => {
     var orderId = req.params.id;
     
     try {
+        // get order
         order = await Order.findById(orderId);
+
+        // if order is 'Closed' do not checkout again
+        if (order.status === 'Closed') {
+            throw new Error('Order is already Closed');
+        }
+
         // items in the order
         let orderItems = order.items;
             
@@ -265,9 +262,10 @@ app.get('/:id/checkout', async (req, res) => {
             // accumulate to order total
             order.total += itemPrice * itemQuantity;
         };
-        // update order status and total
-        console.log('total ',order.total);
+        
+        // update order status and order close date
         order.status = 'Closed';
+        order.closedDate = Date.now();
 
         // save order
         let orderDB = await order.save();

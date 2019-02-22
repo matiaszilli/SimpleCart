@@ -127,9 +127,16 @@ app.patch('/bestSeller', async (req, res) => {
         
         // iterate over each Order
         for (const order of orders) {
+
+            // if order is not 'Closed' continue
+            if (order.status !== 'Closed') {
+                continue;
+            }
+
             let orderItems = order.items;
             // iterate over each item in the Order
             for (const orderItem of orderItems) {
+
                 // if the product exist in the Best table then increment quantity
                 let itemBestFound = bests.find( (itemBest) => itemBest._id.toString() === orderItem._id.toString());
                 if (itemBestFound) {
@@ -137,7 +144,9 @@ app.patch('/bestSeller', async (req, res) => {
                 } else { // if not, add it to bests
                     bests.push(orderItem);
                 }
+
             }
+
         }
 
         // sort best array by quantity
@@ -157,7 +166,5 @@ app.patch('/bestSeller', async (req, res) => {
         });
     }
 });
-
-
 
 module.exports = app;
